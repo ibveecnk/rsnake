@@ -30,12 +30,12 @@ fn main() {
         square: LinkedList::new(),
     };
 
-    let mut i = 100f64;
+    let mut i = 0.0;
     let mut rng = thread_rng();
 
-    while i < 600.0 {
-        let mut j = 100f64;
-        while j < 600.0 {
+    while i <= 600.0 {
+        let mut j = 0.0;
+        while j <= 600.0 {
             let rnd_arr: [f32; 8] = rng.gen();
 
             let mut r = rnd_arr[0] * 2.0;
@@ -46,8 +46,8 @@ fn main() {
             let mut blue: f32 = rnd_arr[3];
             let mut tr: f32 = rnd_arr[4];
 
-            red = red.min(0.2).max(1.0);
-            green = green.min(0.2).max(1.0);
+            red = red.max(0.2).min(1.0);
+            green = green.max(0.2).min(1.0);
             blue = blue.max(0.2).min(1.0);
             tr = tr.max(0.5).min(1.0);
 
@@ -58,12 +58,14 @@ fn main() {
                 rot_speed: r as f64 * 2.0,
                 rotation: 0f64,
             });
-            j += 100.0;
+            j += 50.0;
         }
-        i += 100.0;
+        i += 50.0;
     }
 
-    let mut events = Events::new(EventSettings::new());
+    let mut e_settings = EventSettings::new();
+    e_settings.ups = 20;
+    let mut events = Events::new(e_settings);
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.render_args() {
             app.render(&args);

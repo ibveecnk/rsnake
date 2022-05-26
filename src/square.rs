@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+
 use opengl_graphics::GlGraphics;
 use piston::input::{RenderArgs, UpdateArgs};
 
@@ -14,15 +15,16 @@ impl Square {
     pub fn render(&mut self, gl: &mut GlGraphics, args: &RenderArgs) {
         use graphics::*;
 
-        let square = rectangle::square(0.0, 0.0, 50.0);
+        let square = rectangle::square(0.0, 0.0, 100.0);
 
         gl.draw(args.viewport(), |c, gl| {
             let transform = c
                 .transform
                 .trans(self.x, self.y)
                 .rot_rad(self.rotation.cos())
-                .trans(-25.0, -25.0);
+                .trans(-50.0, -50.0);
 
+            // println!("{:?}", self.color);
             // Draw a box rotating around the middle of the screen.
             rectangle(self.color, square, transform, gl);
         });

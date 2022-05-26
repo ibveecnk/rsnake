@@ -28,10 +28,14 @@ impl App {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
+        use std::time::Instant;
+        let now = Instant::now();
         let iter = self.square.iter_mut();
-
         iter.for_each(|i| {
             i.update(&args);
         });
+
+        let elapsed = now.elapsed();
+        println!("Elapsed: {:.2?}", elapsed);
     }
 }
