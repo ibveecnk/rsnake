@@ -64,7 +64,7 @@ fn main() {
     }
 
     let mut e_settings = EventSettings::new();
-    e_settings.ups = 20;
+    e_settings.ups = 120;
     let mut events = Events::new(e_settings);
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.render_args() {

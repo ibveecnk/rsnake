@@ -12,10 +12,3 @@ pistoncore-glutin_window = "0.70.1"
 piston2d-opengl_graphics = "0.81.0"
 piston_window = "0.123.0"
 rand = "0.8.5"
-
-[build]
-rustc = "rustc"               # the rust compiler tool
-rustdoc = "rustdoc"           # the doc generator tool
-target = "triple"             # build for the target triple (ignored by `cargo install`)
-target-dir = "target"         # path of where to place all generated artifacts
-incremental = true            # whether or not to enable incremental compilation
