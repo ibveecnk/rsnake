@@ -17,14 +17,14 @@ mod app;
 pub mod square;
 
 fn main() {
-    const WINDOWSIZE: [f64; 2] = [1000.0, 600.0];
-    const INCR: f64 = 10.0;
+    const WINDOWSIZE: [f64; 2] = [600.0, 600.0];
+    const INCR: f64 = 50.0;
 
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new("spinning-square", WINDOWSIZE)
+    let mut window: Window = WindowSettings::new("RSnake", WINDOWSIZE)
         .graphics_api(opengl)
         .exit_on_esc(true)
         .resizable(false)
