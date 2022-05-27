@@ -12,16 +12,21 @@ use rand::{thread_rng, Rng};
 use std::collections::LinkedList;
 
 mod app;
-mod square;
+
+#[path = "./square.rs"]
+pub mod square;
 
 fn main() {
+    const WINDOWSIZE: [f64; 2] = [1000.0, 600.0];
+
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new("spinning-square", [600, 600])
+    let mut window: Window = WindowSettings::new("spinning-square", WINDOWSIZE)
         .graphics_api(opengl)
         .exit_on_esc(true)
+        .resizable(false)
         .build()
         .unwrap();
 
@@ -33,9 +38,10 @@ fn main() {
     let mut i = 0.0;
     let mut rng = thread_rng();
 
-    while i <= 600.0 {
+    const INCR: f64 = 10.0;
+    while i <= WINDOWSIZE[0] {
         let mut j = 0.0;
-        while j <= 600.0 {
+        while j <= WINDOWSIZE[1] {
             let rnd_arr: [f32; 8] = rng.gen();
 
             let mut r = rnd_arr[0] * 2.0;
@@ -51,28 +57,46 @@ fn main() {
             blue = blue.max(0.2).min(1.0);
             tr = tr.max(0.5).min(1.0);
 
-            app.square.push_front(app::square::Square {
-                color: [red, green, blue, tr],
-                x: i,
-                y: j,
-                rot_speed: r as f64 * 2.0,
-                rotation: 0f64,
-            });
-            j += 50.0;
+            let square =
+                app::square::Square::new(i, j, INCR, 0f64, r as f64 * 2.0, [red, green, blue, tr]);
+
+            app.square.push_front(square);
+            j += INCR;
         }
-        i += 50.0;
+        i += INCR;
     }
+
+    println!("Created {} squares.", app.square.len());
+
+    use std::time::Instant;
+    let time = Instant::now();
+    let mut now: [std::time::Instant; 2] = [time, time];
+    let mut cnt: [u64; 2] = [0, 0];
 
     let mut e_settings = EventSettings::new();
     e_settings.ups = 120;
     let mut events = Events::new(e_settings);
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.render_args() {
-            app.render(&args);
+            if cnt[0] == 99 {
+                let elapsed = now[0].elapsed();
+                println!("100 render cycles took: {:.2?}", elapsed);
+                now[0] = Instant::now();
+            }
+            app.render(&args, cnt[0]);
+            cnt[0] += 1;
+            cnt[0] %= 100;
         }
 
         if let Some(args) = e.update_args() {
-            app.update(&args);
+            if cnt[1] == 99 {
+                let elapsed = now[1].elapsed();
+                println!("100 update cycles took: {:.2?}", elapsed);
+                now[1] = Instant::now();
+            }
+            app.update(&args, cnt[1]);
+            cnt[1] += 1;
+            cnt[1] %= 100;
         }
     }
 }

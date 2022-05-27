@@ -11,7 +11,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn render(&mut self, args: &RenderArgs) {
+    pub fn render(&mut self, args: &RenderArgs, cnt: u64) {
         use graphics::*;
 
         const BGCOLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.3];
@@ -20,22 +20,43 @@ impl App {
             clear(BGCOLOR, gl);
         });
 
-        let iter = self.square.iter_mut();
+        if cnt == 0 {
+            use std::time::Instant;
+            let now = Instant::now();
 
-        iter.for_each(|i| {
-            i.render(&mut self.gl, &args);
-        });
+            let iter = self.square.iter_mut();
+
+            iter.for_each(|i| {
+                i.render(&mut self.gl, &args);
+            });
+            let elapsed = now.elapsed();
+            println!("1 render cycle took: {:.2?}", elapsed);
+        } else {
+            let iter = self.square.iter_mut();
+
+            iter.for_each(|i| {
+                i.render(&mut self.gl, &args);
+            });
+        }
     }
 
-    pub fn update(&mut self, args: &UpdateArgs) {
-        use std::time::Instant;
-        let now = Instant::now();
-        let iter = self.square.iter_mut();
-        iter.for_each(|i| {
-            i.update(&args);
-        });
+    pub fn update(&mut self, args: &UpdateArgs, cnt: u64) {
+        if cnt == 0 {
+            use std::time::Instant;
+            let now = Instant::now();
 
-        let elapsed = now.elapsed();
-        println!("Elapsed: {:.2?}", elapsed);
+            let iter = self.square.iter_mut();
+            iter.for_each(|i| {
+                i.update(&args);
+            });
+
+            let elapsed = now.elapsed();
+            println!("1 update cycle took: {:.2?}", elapsed);
+        } else {
+            let iter = self.square.iter_mut();
+            iter.for_each(|i| {
+                i.update(&args);
+            });
+        }
     }
 }
