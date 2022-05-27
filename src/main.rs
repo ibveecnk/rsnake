@@ -68,12 +68,7 @@ fn main() {
         i += INCR;
     }
 
-    println!("Created {} squares.", app.square.len());
-
-    use std::time::Instant;
-    let time = Instant::now();
-    let mut now: [std::time::Instant; 2] = [time, time];
-    let mut cnt: [u64; 2] = [0, 0];
+    println!("Created {} objects.", app.square.len());
 
     let mut e_settings = EventSettings::new();
     e_settings.ups = 120;
@@ -81,26 +76,12 @@ fn main() {
     while let Some(e) = events.next(&mut window) {
         // Render loop
         if let Some(args) = e.render_args() {
-            if cnt[0] == 99 {
-                let elapsed = now[0].elapsed();
-                println!("100 render cycles took: {:.2?}", elapsed);
-                now[0] = Instant::now();
-            }
-            app.render(&args, cnt[0]);
-            cnt[0] += 1;
-            cnt[0] %= 100;
+            app.render(&args);
         }
 
         // update loop
         if let Some(args) = e.update_args() {
-            if cnt[1] == 99 {
-                let elapsed = now[1].elapsed();
-                println!("100 update cycles took: {:.2?}", elapsed);
-                now[1] = Instant::now();
-            }
-            app.update(&args, cnt[1]);
-            cnt[1] += 1;
-            cnt[1] %= 100;
+            app.update(&args);
         }
     }
 }
