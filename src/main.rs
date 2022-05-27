@@ -18,6 +18,7 @@ pub mod square;
 
 fn main() {
     const WINDOWSIZE: [f64; 2] = [1000.0, 600.0];
+    const INCR: f64 = 10.0;
 
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
@@ -38,11 +39,12 @@ fn main() {
     let mut i = 0.0;
     let mut rng = thread_rng();
 
-    const INCR: f64 = 10.0;
+    // generate squares
     while i <= WINDOWSIZE[0] {
         let mut j = 0.0;
         while j <= WINDOWSIZE[1] {
-            let rnd_arr: [f32; 8] = rng.gen();
+            // generate 5 random numbers
+            let rnd_arr: [f32; 5] = rng.gen();
 
             let mut r = rnd_arr[0] * 2.0;
             r = r.max(0.3).min(2.0);
@@ -77,6 +79,7 @@ fn main() {
     e_settings.ups = 120;
     let mut events = Events::new(e_settings);
     while let Some(e) = events.next(&mut window) {
+        // Render loop
         if let Some(args) = e.render_args() {
             if cnt[0] == 99 {
                 let elapsed = now[0].elapsed();
@@ -88,6 +91,7 @@ fn main() {
             cnt[0] %= 100;
         }
 
+        // update loop
         if let Some(args) = e.update_args() {
             if cnt[1] == 99 {
                 let elapsed = now[1].elapsed();
