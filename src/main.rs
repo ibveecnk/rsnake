@@ -22,7 +22,7 @@ fn main() {
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new("spinning-square", settings::WINDOWSIZE)
+    let mut window: Window = WindowSettings::new("RSnake", settings::WINDOWSIZE)
         .graphics_api(opengl)
         .exit_on_esc(true)
         .resizable(false)

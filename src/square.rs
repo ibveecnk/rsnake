@@ -58,7 +58,7 @@ impl Square {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        let new_rot = self.rotation + self.rot_speed * args.dt;
+        let new_rot: f64 = self.rotation + self.rot_speed * args.dt;
         // prevent rotation overflow
         if new_rot >= 360.0 {
             self.rotation = 0.0;
