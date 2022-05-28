@@ -12,19 +12,17 @@ use rand::{thread_rng, Rng};
 use std::collections::LinkedList;
 
 mod app;
-
+#[path = "./settings.rs"]
+pub mod settings;
 #[path = "./square.rs"]
 pub mod square;
 
 fn main() {
-    const WINDOWSIZE: [f64; 2] = [1000.0, 600.0];
-    const INCR: f64 = 10.0;
-
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new("spinning-square", WINDOWSIZE)
+    let mut window: Window = WindowSettings::new("spinning-square", settings::WINDOWSIZE)
         .graphics_api(opengl)
         .exit_on_esc(true)
         .resizable(false)
@@ -40,14 +38,17 @@ fn main() {
     let mut rng = thread_rng();
 
     // generate squares
-    while i <= WINDOWSIZE[0] {
+    while i <= settings::WINDOWSIZE[0] {
         let mut j = 0.0;
-        while j <= WINDOWSIZE[1] {
-            // generate 5 random numbers
-            let rnd_arr: [f32; 5] = rng.gen();
+        while j <= settings::WINDOWSIZE[1] {
+            // generate 6 random numbers
+            let rnd_arr: [f32; 6] = rng.gen();
 
             let mut r = rnd_arr[0] * 2.0;
             r = r.max(0.3).min(2.0);
+
+            let mut m: f32 = (rnd_arr[5] * 10.0) - 5.0;
+            m = m.max(-5.0).min(5.0);
 
             let mut red: f32 = rnd_arr[1];
             let mut green: f32 = rnd_arr[2];
@@ -59,13 +60,21 @@ fn main() {
             blue = blue.max(0.2).min(1.0);
             tr = tr.max(0.5).min(1.0);
 
-            let square =
-                app::square::Square::new(i, j, INCR, 0f64, r as f64 * 2.0, [red, green, blue, tr]);
+            let square = app::square::Square::new(
+                i,
+                j,
+                settings::INCR,
+                0f64,
+                r as f64,
+                m as f64,
+                m as f64,
+                [red, green, blue, tr],
+            );
 
             app.square.push_front(square);
-            j += INCR;
+            j += settings::INCR;
         }
-        i += INCR;
+        i += settings::INCR;
     }
 
     println!("Created {} objects.", app.square.len());
