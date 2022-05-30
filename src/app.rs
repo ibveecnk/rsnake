@@ -14,7 +14,7 @@ impl App {
     pub fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
 
-        const BGCOLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.3];
+        const BGCOLOR: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
         self.gl.draw(args.viewport(), |_c, gl| {
             clear(BGCOLOR, gl);

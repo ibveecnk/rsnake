@@ -47,7 +47,7 @@ impl Square {
             let transform = c
                 .transform
                 .trans(self.x, self.y)
-                .rot_rad(self.rotation.cos())
+                .rot_rad(self.rotation)
                 // transform rotating point to center of square d
                 .trans(-0.5 * self.width, -0.5 * self.width);
 
@@ -58,20 +58,15 @@ impl Square {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        let new_rot: f64 = self.rotation + self.rot_speed * args.dt;
-        // prevent rotation overflow
-        if new_rot >= 360.0 {
-            self.rotation = 0.0;
-        } else {
-            self.rotation = new_rot;
-        }
         self.x += self.mov_speed_x * args.dt;
         self.y += self.mov_speed_y * args.dt;
 
-        if self.x <= 0.0 || self.x >= settings::WINDOWSIZE[0] {
+        if self.x - self.width / 2.0 <= 0.0 || self.x + self.width / 2.0 >= settings::WINDOWSIZE[0]
+        {
             self.mov_speed_x = -self.mov_speed_x;
         }
-        if self.y <= 0.0 || self.y >= settings::WINDOWSIZE[1] {
+        if self.y - self.width / 2.0 <= 0.0 || self.y + self.width / 2.0 >= settings::WINDOWSIZE[1]
+        {
             self.mov_speed_y = -self.mov_speed_y;
         }
     }
