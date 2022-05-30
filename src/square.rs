@@ -31,14 +31,14 @@ impl Square {
         color: [f32; 4],
     ) -> Square {
         Square {
-            x: x,
-            y: y,
-            width: width,
-            rotation: rotation,
-            rot_speed: rot_speed,
-            mov_speed_x: mov_speed_x,
-            mov_speed_y: mov_speed_y,
-            color: color,
+            x,
+            y,
+            width,
+            rotation,
+            rot_speed,
+            mov_speed_x,
+            mov_speed_y,
+            color,
             square: rectangle::square(0.0, 0.0, width),
         }
     }

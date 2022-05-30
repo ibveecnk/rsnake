@@ -37,7 +37,7 @@ fn main() {
 
     const MAX_VEL: f64 = 100.0;
 
-    for _i in 0..1000 as i64 {
+    for _i in 0..1000_i64 {
         app.square.push_front(app::square::Square::new(
             settings::WINDOWSIZE[0] / 2.0,
             settings::WINDOWSIZE[1] / 2.0,

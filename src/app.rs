@@ -23,14 +23,14 @@ impl App {
         let iter = self.square.iter_mut();
 
         iter.for_each(|i| {
-            i.render(&mut self.gl, &args);
+            i.render(&mut self.gl, args);
         });
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
         let iter = self.square.iter_mut();
         iter.for_each(|i| {
-            i.update(&args);
+            i.update(args);
         });
     }
 }
