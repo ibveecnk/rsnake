@@ -14,6 +14,8 @@ use std::vec::Vec;
 
 mod app;
 
+#[path = "./math.rs"]
+pub mod math;
 #[path = "./settings.rs"]
 pub mod settings;
 #[path = "./square.rs"]
