@@ -10,7 +10,7 @@ use piston::input::{RenderEvent, UpdateEvent};
 use piston::window::WindowSettings;
 use piston::{ButtonEvent, Key};
 use rand::Rng;
-use std::collections::LinkedList;
+use std::vec::Vec;
 
 mod app;
 
@@ -34,7 +34,7 @@ fn main() {
 
     let mut app = app::App {
         gl: GlGraphics::new(opengl),
-        snake: LinkedList::new(),
+        snake: Vec::new(),
         food: app::square::Square::new(
             rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
             rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
@@ -48,7 +48,7 @@ fn main() {
         score: 0,
     };
 
-    app.snake.push_front(app::square::Square::new(
+    app.snake.push(app::square::Square::new(
         settings::WINDOWSIZE[0] / 2.0,
         settings::WINDOWSIZE[1] / 2.0,
         10.0,

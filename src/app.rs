@@ -4,7 +4,7 @@ use piston::{
     Button, ButtonArgs, ButtonState,
 };
 use rand::Rng;
-use std::collections::LinkedList;
+use std::vec::Vec;
 
 use crate::settings;
 
@@ -13,7 +13,7 @@ pub mod square;
 
 pub struct App {
     pub gl: GlGraphics, // OpenGL drawing backend.
-    pub snake: LinkedList<square::Square>,
+    pub snake: Vec<square::Square>,
     pub food: square::Square,
     pub last_key: piston::Button,
     pub score: i64,
