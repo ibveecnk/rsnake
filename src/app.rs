@@ -16,6 +16,7 @@ pub struct App {
     pub snake: LinkedList<square::Square>,
     pub food: square::Square,
     pub last_key: piston::Button,
+    pub score: i64,
 }
 
 impl App {
@@ -61,6 +62,7 @@ impl App {
                 && i.y >= self.food.y - self.food.width / 2.0
                 && i.y <= self.food.y + self.food.width / 2.0
             {
+                // Generate new random food
                 self.food = square::Square::new(
                     rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
                     rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
@@ -69,9 +71,13 @@ impl App {
                     0.0,
                     [255.0, 50.0, 50.0, 255.0],
                     square::SquareType::Food,
-                )
+                );
+
+                // Rudimentary score counter
+                // TODO: draw score on screen
+                self.score += 1;
+                println!("Score: {}", self.score);
             }
-            //&& i.Top > food.Bottom && i.Bottom < food.Top )
         });
     }
 

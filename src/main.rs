@@ -45,6 +45,7 @@ fn main() {
             app::square::SquareType::Food,
         ),
         last_key: piston::Button::Keyboard(Key::AcHome),
+        score: 0,
     };
 
     app.snake.push_front(app::square::Square::new(
