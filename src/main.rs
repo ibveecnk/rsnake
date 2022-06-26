@@ -41,7 +41,7 @@ fn main() {
             10.0,
             0.0,
             0.0,
-            [255.0, 50.0, 50.0, 255.0],
+            [1.0, 0.0, 0.0, 1.0],
             app::square::SquareType::Food,
         ),
         last_key: piston::Button::Keyboard(Key::AcHome),
@@ -54,7 +54,7 @@ fn main() {
         10.0,
         0.0,
         0.0,
-        [0.0, 255.0, 0.0, 255.0],
+        [0.0, 1.0, 0.0, 1.0],
         app::square::SquareType::Head,
     ));
 
