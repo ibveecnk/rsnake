@@ -57,10 +57,16 @@ impl App {
         let iter = self.snake.iter_mut();
         iter.for_each(|i| {
             i.update(args);
-            if i.x >= self.food.x - self.food.width / 2.0
-                && i.x <= self.food.x + self.food.width / 2.0
-                && i.y >= self.food.y - self.food.width / 2.0
-                && i.y <= self.food.y + self.food.width / 2.0
+
+            // Check for Food/Snake collision
+            if (i.x - i.width / 2.0 >= self.food.x - self.food.width / 2.0
+                || i.x + i.width / 2.0 >= self.food.x - self.food.width / 2.0)
+                && (i.x - i.width / 2.0 <= self.food.x + self.food.width / 2.0
+                    || i.x + i.width / 2.0 <= self.food.x + self.food.width / 2.0)
+                && (i.y - i.width / 2.0 >= self.food.y - self.food.width / 2.0
+                    || i.y + i.width / 2.0 >= self.food.y - self.food.width / 2.0)
+                && (i.y - i.width / 2.0 <= self.food.y + self.food.width / 2.0
+                    || i.y + i.width / 2.0 <= self.food.y + self.food.width / 2.0)
             {
                 // Generate new random food
                 self.food = square::Square::new(
