@@ -8,10 +8,12 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderEvent, UpdateEvent};
 use piston::window::WindowSettings;
+use piston::{ButtonEvent, Key};
 use rand::Rng;
 use std::collections::LinkedList;
 
 mod app;
+
 #[path = "./settings.rs"]
 pub mod settings;
 #[path = "./square.rs"]
@@ -32,25 +34,28 @@ fn main() {
 
     let mut app = app::App {
         gl: GlGraphics::new(opengl),
-        square: LinkedList::new(),
+        snake: LinkedList::new(),
+        food: app::square::Square::new(
+            rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
+            rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
+            10.0,
+            0.0,
+            0.0,
+            [255.0, 50.0, 50.0, 255.0],
+            app::square::SquareType::Food,
+        ),
+        last_key: piston::Button::Keyboard(Key::AcHome),
     };
 
-    const MAX_VEL: f64 = 100.0;
-
-    for _i in 0..1000_i64 {
-        app.square.push_front(app::square::Square::new(
-            settings::WINDOWSIZE[0] / 2.0,
-            settings::WINDOWSIZE[1] / 2.0,
-            1.0,
-            0.0,
-            0.0,
-            rng.gen_range(-MAX_VEL..MAX_VEL),
-            rng.gen_range(-MAX_VEL..MAX_VEL),
-            [0.0, 255.0, 0.0, 255.0],
-        ));
-    }
-
-    println!("Created {} objects.", app.square.len());
+    app.snake.push_front(app::square::Square::new(
+        settings::WINDOWSIZE[0] / 2.0,
+        settings::WINDOWSIZE[1] / 2.0,
+        10.0,
+        0.0,
+        0.0,
+        [0.0, 255.0, 0.0, 255.0],
+        app::square::SquareType::Head,
+    ));
 
     let mut e_settings = EventSettings::new();
     e_settings.ups = 120;
@@ -64,6 +69,10 @@ fn main() {
         // update loop
         if let Some(args) = e.update_args() {
             app.update(&args);
+        }
+
+        if let Some(args) = e.button_args() {
+            app.input(&args);
         }
     }
 }
