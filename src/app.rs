@@ -6,7 +6,7 @@ use piston::{
 use rand::Rng;
 use std::vec::Vec;
 
-use crate::{app::square::Square, settings};
+use crate::settings;
 
 #[path = "./square.rs"]
 pub mod square;
