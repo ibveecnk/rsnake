@@ -53,7 +53,7 @@ fn main() {
     app.snake.push(app::square::Square::new(
         settings::WINDOWSIZE[0] / 2.0,
         settings::WINDOWSIZE[1] / 2.0,
-        10.0,
+        13.0,
         0.0,
         0.0,
         [0.0, 1.0, 0.0, 1.0],

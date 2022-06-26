@@ -6,7 +6,7 @@ use piston::{
 use rand::Rng;
 use std::vec::Vec;
 
-use crate::{math::signum, settings};
+use crate::{app::square::Square, settings};
 
 #[path = "./square.rs"]
 pub mod square;
@@ -39,11 +39,10 @@ impl App {
 
         self.food.render(&mut self.gl, args);
 
-        let iter = self.snake.iter_mut();
-
-        iter.for_each(|i| {
-            i.render(&mut self.gl, args);
-        });
+        // Reverse, so head is drawn on top
+        for i in (0..self.snake.len()).rev() {
+            self.snake[i].render(&mut self.gl, args);
+        }
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
@@ -52,17 +51,11 @@ impl App {
         self.food.update(args);
 
         let head = &mut self.snake[0];
-        let mut collided = false;
 
         head.update(args);
 
         // Check for Food/Snake collision
         if head.intersect(self.food) {
-            collided = true;
-        }
-
-        if collided {
-            // Generate new random food
             self.food = square::Square::new(
                 rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
                 rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
@@ -75,18 +68,13 @@ impl App {
 
             let last_x = self.snake[self.snake.len() - 1].x;
             let last_y = self.snake[self.snake.len() - 1].y;
-            let last_vx = self.snake[self.snake.len() - 1].mov_speed_x;
-            let last_vy = self.snake[self.snake.len() - 1].mov_speed_y;
-
-            let new_x = last_x - signum(last_vx) * 10.0;
-            let new_y = last_y - signum(last_vy) * 10.0;
 
             self.snake.push(square::Square::new(
-                new_x,
-                new_y,
+                last_x,
+                last_y,
                 10.0,
-                last_vx,
-                last_vy,
+                0.0,
+                0.0,
                 [0.1, 0.7, 0.3, 1.0],
                 square::SquareType::Tail,
             ));
@@ -94,7 +82,7 @@ impl App {
             // Rudimentary score counter
             // TODO: draw score on screen
             self.score += 1;
-            println!("Score: {}", self.score);
+            // println!("Score: {}", self.score);
         }
 
         let mut collided_self = false;
@@ -119,7 +107,9 @@ impl App {
         }
 
         if collided_self {
-            println!("Game Over!");
+            println!("Game Over! Your score was {}.", self.score);
+            self.score = 0;
+            self.snake = vec![self.snake[0]];
         }
     }
 
