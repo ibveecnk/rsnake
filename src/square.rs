@@ -65,13 +65,17 @@ impl Square {
         self.x += self.mov_speed_x * args.dt;
         self.y += self.mov_speed_y * args.dt;
 
-        if self.x - self.width / 2.0 <= 0.0 || self.x + self.width / 2.0 >= settings::WINDOWSIZE[0]
-        {
-            self.mov_speed_x = -self.mov_speed_x;
+        if self.x - self.width / 2.0 < 0.0 {
+            self.x = settings::WINDOWSIZE[0] - self.width / 2.0;
         }
-        if self.y - self.width / 2.0 <= 0.0 || self.y + self.width / 2.0 >= settings::WINDOWSIZE[1]
-        {
-            self.mov_speed_y = -self.mov_speed_y;
+        if self.x + self.width / 2.0 > settings::WINDOWSIZE[0] {
+            self.x = 0.0 + self.width / 2.0;
+        }
+        if self.y - self.width / 2.0 < 0.0 {
+            self.y = settings::WINDOWSIZE[1] - self.width / 2.0;
+        }
+        if self.y + self.width / 2.0 > settings::WINDOWSIZE[1] {
+            self.y = 0.0 + self.width / 2.0;
         }
     }
 }
