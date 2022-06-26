@@ -7,15 +7,23 @@ use piston::input::{RenderArgs, UpdateArgs};
 #[path = "./settings.rs"]
 pub mod settings;
 
+#[derive(Debug)]
+
+pub enum SquareType {
+    Head,
+    Tail,
+    Food,
+}
+
+#[derive(Debug)]
 pub struct Square {
     pub x: f64,
     pub y: f64,
     pub width: f64,
-    pub rotation: f64,
-    pub rot_speed: f64,
     pub mov_speed_x: f64,
     pub mov_speed_y: f64,
     pub color: [f32; 4],
+    pub square_type: SquareType,
     square: graphics::types::Rectangle,
 }
 
@@ -24,21 +32,19 @@ impl Square {
         x: f64,
         y: f64,
         width: f64,
-        rotation: f64,
-        rot_speed: f64,
         mov_speed_x: f64,
         mov_speed_y: f64,
         color: [f32; 4],
+        square_type: SquareType,
     ) -> Square {
         Square {
             x,
             y,
             width,
-            rotation,
-            rot_speed,
             mov_speed_x,
             mov_speed_y,
             color,
+            square_type,
             square: rectangle::square(0.0, 0.0, width),
         }
     }
@@ -47,12 +53,10 @@ impl Square {
             let transform = c
                 .transform
                 .trans(self.x, self.y)
-                .rot_rad(self.rotation)
-                // transform rotating point to center of square d
+                // transform 0,0 point to center of square
                 .trans(-0.5 * self.width, -0.5 * self.width);
 
-            // println!("{:?}", self.color);
-            // Draw a box rotating around the middle of the screen.
+            // Draw the rectangle
             rectangle(self.color, self.square, transform, gl);
         });
     }
