@@ -6,7 +6,7 @@ use piston::{
 use rand::Rng;
 use std::vec::Vec;
 
-use crate::settings;
+use crate::{math::signum, settings};
 
 #[path = "./square.rs"]
 pub mod square;
@@ -24,12 +24,8 @@ impl App {
         let v_x = settings::SPEED * x;
         let v_y = settings::SPEED * y;
 
-        let iter = self.snake.iter_mut();
-
-        iter.for_each(|i| {
-            i.mov_speed_x = v_x;
-            i.mov_speed_y = v_y;
-        })
+        self.snake[0].mov_speed_x = v_x;
+        self.snake[0].mov_speed_y = v_y;
     }
 
     pub fn render(&mut self, args: &RenderArgs) {
@@ -54,37 +50,77 @@ impl App {
         let mut rng = rand::thread_rng();
 
         self.food.update(args);
-        let iter = self.snake.iter_mut();
-        iter.for_each(|i| {
-            i.update(args);
 
-            // Check for Food/Snake collision
-            if (i.x - i.width / 2.0 >= self.food.x - self.food.width / 2.0
-                || i.x + i.width / 2.0 >= self.food.x - self.food.width / 2.0)
-                && (i.x - i.width / 2.0 <= self.food.x + self.food.width / 2.0
-                    || i.x + i.width / 2.0 <= self.food.x + self.food.width / 2.0)
-                && (i.y - i.width / 2.0 >= self.food.y - self.food.width / 2.0
-                    || i.y + i.width / 2.0 >= self.food.y - self.food.width / 2.0)
-                && (i.y - i.width / 2.0 <= self.food.y + self.food.width / 2.0
-                    || i.y + i.width / 2.0 <= self.food.y + self.food.width / 2.0)
-            {
-                // Generate new random food
-                self.food = square::Square::new(
-                    rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
-                    rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
-                    10.0,
-                    0.0,
-                    0.0,
-                    [1.0, 0.0, 0.0, 1.0],
-                    square::SquareType::Food,
-                );
+        let head = &mut self.snake[0];
+        let mut collided = false;
 
-                // Rudimentary score counter
-                // TODO: draw score on screen
-                self.score += 1;
-                println!("Score: {}", self.score);
+        head.update(args);
+
+        // Check for Food/Snake collision
+        if head.intersect(self.food) {
+            collided = true;
+        }
+
+        if collided {
+            // Generate new random food
+            self.food = square::Square::new(
+                rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
+                rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
+                10.0,
+                0.0,
+                0.0,
+                [1.0, 0.0, 0.0, 1.0],
+                square::SquareType::Food,
+            );
+
+            let last_x = self.snake[self.snake.len() - 1].x;
+            let last_y = self.snake[self.snake.len() - 1].y;
+            let last_vx = self.snake[self.snake.len() - 1].mov_speed_x;
+            let last_vy = self.snake[self.snake.len() - 1].mov_speed_y;
+
+            let new_x = last_x - signum(last_vx) * 10.0;
+            let new_y = last_y - signum(last_vy) * 10.0;
+
+            self.snake.push(square::Square::new(
+                new_x,
+                new_y,
+                10.0,
+                last_vx,
+                last_vy,
+                [0.1, 0.7, 0.3, 1.0],
+                square::SquareType::Tail,
+            ));
+
+            // Rudimentary score counter
+            // TODO: draw score on screen
+            self.score += 1;
+            println!("Score: {}", self.score);
+        }
+
+        let mut collided_self = false;
+
+        for i in (1..self.snake.len()).rev() {
+            // magic number is the bonding force
+            self.snake[i].mov_speed_x = (self.snake[i - 1].x - self.snake[i].x) * 10.0;
+            self.snake[i].mov_speed_y = (self.snake[i - 1].y - self.snake[i].y) * 10.0;
+
+            self.snake[i].update(args);
+
+            if i < 3 {
+                continue;
+            } else {
+                let head = self.snake[0];
+                let ele = self.snake[i];
+
+                if ele.intersect(head) {
+                    collided_self = true;
+                }
             }
-        });
+        }
+
+        if collided_self {
+            println!("Game Over!");
+        }
     }
 
     pub fn input(&mut self, args: &ButtonArgs) {

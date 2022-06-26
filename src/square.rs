@@ -7,7 +7,7 @@ use piston::input::{RenderArgs, UpdateArgs};
 #[path = "./settings.rs"]
 pub mod settings;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 
 pub enum SquareType {
     Head,
@@ -15,7 +15,7 @@ pub enum SquareType {
     Food,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Square {
     pub x: f64,
     pub y: f64,
@@ -77,5 +77,20 @@ impl Square {
         if self.y + self.width / 2.0 > settings::WINDOWSIZE[1] {
             self.y = 0.0 + self.width / 2.0;
         }
+    }
+
+    pub fn intersect(self, square: Square) -> bool {
+        if (self.x - self.width / 2.0 >= square.x - square.width / 2.0
+            || self.x + self.width / 2.0 >= square.x - square.width / 2.0)
+            && (self.x - self.width / 2.0 <= square.x + square.width / 2.0
+                || self.x + self.width / 2.0 <= square.x + square.width / 2.0)
+            && (self.y - self.width / 2.0 >= square.y - square.width / 2.0
+                || self.y + self.width / 2.0 >= square.y - square.width / 2.0)
+            && (self.y - self.width / 2.0 <= square.y + square.width / 2.0
+                || self.y + self.width / 2.0 <= square.y + square.width / 2.0)
+        {
+            return true;
+        }
+        return false;
     }
 }
