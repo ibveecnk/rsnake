@@ -5,6 +5,7 @@ use piston::{
 };
 use rand::Rng;
 
+#[allow(unused_imports)]
 use crate::{
     math::{abs, signum},
     settings,
@@ -64,6 +65,7 @@ impl App {
         self.score += n;
     }
 
+    #[allow(dead_code)]
     pub fn reset_tail(&mut self) -> usize {
         let len = self.snake.len();
         self.snake = vec![self.snake[0]];
