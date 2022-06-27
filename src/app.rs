@@ -4,9 +4,8 @@ use piston::{
     Button, ButtonArgs, ButtonState,
 };
 use rand::Rng;
-use std::{thread::sleep, time::Duration, vec::Vec};
 
-use crate::settings;
+use crate::{math::signum, settings};
 
 #[path = "./square.rs"]
 pub mod square;
@@ -44,8 +43,10 @@ impl App {
 
     fn increase_snake_length(&mut self, n: i64) {
         for _ in 0..n {
-            let last_x = self.snake[self.snake.len() - 1].x;
-            let last_y = self.snake[self.snake.len() - 1].y;
+            let last_x = self.snake[self.snake.len() - 1].x
+                - signum(self.snake[self.snake.len() - 1].mov_speed_x) * 20.0;
+            let last_y = self.snake[self.snake.len() - 1].y
+                - signum(self.snake[self.snake.len() - 1].mov_speed_y) * 20.0;
 
             self.snake.push(square::Square::new(
                 last_x,
@@ -115,6 +116,7 @@ impl App {
 
                 if ele.intersect(head) {
                     self.game_over();
+                    return;
                 }
             }
         }
