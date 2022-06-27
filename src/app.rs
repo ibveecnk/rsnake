@@ -5,7 +5,10 @@ use piston::{
 };
 use rand::Rng;
 
-use crate::{math::signum, settings};
+use crate::{
+    math::{abs, signum},
+    settings,
+};
 
 #[path = "./square.rs"]
 pub mod square;
@@ -61,6 +64,12 @@ impl App {
         self.score += n;
     }
 
+    pub fn reset_tail(&mut self) -> usize {
+        let len = self.snake.len();
+        self.snake = vec![self.snake[0]];
+        return len;
+    }
+
     fn game_over(&mut self) {
         println!("Game Over! Your score was {}.", self.score);
         self.score = 0;
@@ -86,12 +95,10 @@ impl App {
 
     pub fn update(&mut self, args: &UpdateArgs) {
         self.food.update(args);
-
-        let head = &mut self.snake[0];
-        head.update(args);
+        self.snake[0].update(args);
 
         // Check for Food/Snake collision
-        if head.intersect(self.food) {
+        if self.snake[0].intersect(self.food) {
             self.gen_food();
             self.increase_snake_length(1);
 
@@ -99,6 +106,19 @@ impl App {
             // TODO: draw score on screen
             println!("Score: {}", self.score);
         }
+
+        // Todo: wall teleportation fix for tail
+        /*
+        if self.snake.len() > 1
+            && (abs(self.snake[0].x - self.snake[1].x) > 50.0
+                || abs(self.snake[0].y - self.snake[1].y) > 50.0)
+        {
+            // Respawn tail if gone through wall
+            let old_len: i64 = self.reset_tail().try_into().unwrap();
+
+            self.increase_snake_length(old_len);
+        }
+         */
 
         for i in (1..self.snake.len()).rev() {
             // magic number is the bonding force

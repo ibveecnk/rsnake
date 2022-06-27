@@ -7,3 +7,11 @@ pub fn signum(x: f64) -> f64 {
         return 1.0;
     }
 }
+
+pub fn abs(x: f64) -> f64 {
+    if x >= 0.0 {
+        return x;
+    } else {
+        return -1.0 * x;
+    }
+}
