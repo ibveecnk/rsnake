@@ -1,8 +1,11 @@
-# .github/workflows/release.yml
+name: Build and Release
 
 on:
   release:
     types: [created]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   release:
@@ -29,7 +32,6 @@ jobs:
           SRC_DIR: "src"
           ARCHIVE_TYPES: ${{ matrix.archive }}
           MINIFY: "yes"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
