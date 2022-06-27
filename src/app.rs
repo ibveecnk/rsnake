@@ -4,7 +4,7 @@ use piston::{
     Button, ButtonArgs, ButtonState,
 };
 use rand::Rng;
-use std::vec::Vec;
+use std::{thread::sleep, time::Duration, vec::Vec};
 
 use crate::settings;
 
@@ -28,6 +28,44 @@ impl App {
         self.snake[0].mov_speed_y = v_y;
     }
 
+    fn gen_food(&mut self) {
+        let mut rng = rand::thread_rng();
+
+        self.food = square::Square::new(
+            rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
+            rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
+            10.0,
+            0.0,
+            0.0,
+            [1.0, 0.0, 0.0, 1.0],
+            square::SquareType::Food,
+        );
+    }
+
+    fn increase_snake_length(&mut self, n: i64) {
+        for _ in 0..n {
+            let last_x = self.snake[self.snake.len() - 1].x;
+            let last_y = self.snake[self.snake.len() - 1].y;
+
+            self.snake.push(square::Square::new(
+                last_x,
+                last_y,
+                10.0,
+                0.0,
+                0.0,
+                [0.1, 0.7, 0.3, 1.0],
+                square::SquareType::Tail,
+            ));
+        }
+        self.score += n;
+    }
+
+    fn game_over(&mut self) {
+        println!("Game Over! Your score was {}.", self.score);
+        self.score = 0;
+        self.snake = vec![self.snake[0]];
+    }
+
     pub fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
 
@@ -46,46 +84,20 @@ impl App {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        let mut rng = rand::thread_rng();
-
         self.food.update(args);
 
         let head = &mut self.snake[0];
-
         head.update(args);
 
         // Check for Food/Snake collision
         if head.intersect(self.food) {
-            self.food = square::Square::new(
-                rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
-                rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
-                10.0,
-                0.0,
-                0.0,
-                [1.0, 0.0, 0.0, 1.0],
-                square::SquareType::Food,
-            );
-
-            let last_x = self.snake[self.snake.len() - 1].x;
-            let last_y = self.snake[self.snake.len() - 1].y;
-
-            self.snake.push(square::Square::new(
-                last_x,
-                last_y,
-                10.0,
-                0.0,
-                0.0,
-                [0.1, 0.7, 0.3, 1.0],
-                square::SquareType::Tail,
-            ));
+            self.gen_food();
+            self.increase_snake_length(1);
 
             // Rudimentary score counter
             // TODO: draw score on screen
-            self.score += 1;
-            // println!("Score: {}", self.score);
+            println!("Score: {}", self.score);
         }
-
-        let mut collided_self = false;
 
         for i in (1..self.snake.len()).rev() {
             // magic number is the bonding force
@@ -95,21 +107,16 @@ impl App {
             self.snake[i].update(args);
 
             if i < 3 {
+                // This is necessary so we dont game over due to the nature of tail following algorithm
                 continue;
             } else {
                 let head = self.snake[0];
                 let ele = self.snake[i];
 
                 if ele.intersect(head) {
-                    collided_self = true;
+                    self.game_over();
                 }
             }
-        }
-
-        if collided_self {
-            println!("Game Over! Your score was {}.", self.score);
-            self.score = 0;
-            self.snake = vec![self.snake[0]];
         }
     }
 
