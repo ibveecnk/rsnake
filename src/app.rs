@@ -6,13 +6,7 @@ use piston::{
 use rand::Rng;
 
 #[allow(unused_imports)]
-use crate::{
-    math::{abs, signum},
-    settings,
-};
-
-#[path = "./square.rs"]
-pub mod square;
+use crate::{settings, square};
 
 pub struct App {
     pub gl: GlGraphics, // OpenGL drawing backend.
@@ -69,7 +63,7 @@ impl App {
     pub fn reset_tail(&mut self) -> usize {
         let len = self.snake.len();
         self.snake = vec![self.snake[0]];
-        return len;
+        len
     }
 
     fn game_over(&mut self) {
@@ -171,7 +165,7 @@ impl App {
                         self.last_key = args.button;
                     }
                 }
-                _ => return,
+                _ => (),
             }
         }
     }
