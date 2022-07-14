@@ -4,8 +4,7 @@ use graphics::*;
 use opengl_graphics::GlGraphics;
 use piston::input::{RenderArgs, UpdateArgs};
 
-#[path = "./settings.rs"]
-pub mod settings;
+use crate::settings;
 
 #[derive(Debug, Clone, Copy)]
 
@@ -91,6 +90,6 @@ impl Square {
         {
             return true;
         }
-        return false;
+        false
     }
 }

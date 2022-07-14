@@ -13,13 +13,8 @@ use rand::Rng;
 use std::vec::Vec;
 
 mod app;
-
-#[path = "./math.rs"]
-pub mod math;
-#[path = "./settings.rs"]
-pub mod settings;
-#[path = "./square.rs"]
-pub mod square;
+mod settings;
+mod square;
 
 fn main() {
     // Change this to OpenGL::V2_1 if not working.
@@ -37,27 +32,27 @@ fn main() {
     let mut app = app::App {
         gl: GlGraphics::new(opengl),
         snake: Vec::new(),
-        food: app::square::Square::new(
+        food: square::Square::new(
             rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
             rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
             10.0,
             0.0,
             0.0,
             [1.0, 0.0, 0.0, 1.0],
-            app::square::SquareType::Food,
+            square::SquareType::Food,
         ),
         last_key: piston::Button::Keyboard(Key::AcHome),
         score: 0,
     };
 
-    app.snake.push(app::square::Square::new(
+    app.snake.push(square::Square::new(
         settings::WINDOWSIZE[0] / 2.0,
         settings::WINDOWSIZE[1] / 2.0,
         10.0,
         0.0,
         0.0,
         [0.0, 1.0, 0.0, 1.0],
-        app::square::SquareType::Head,
+        square::SquareType::Head,
     ));
 
     let mut e_settings = EventSettings::new();
