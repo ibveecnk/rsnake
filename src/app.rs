@@ -94,7 +94,7 @@ impl App {
         self.snake[0].update(args);
 
         // Check for Food/Snake collision
-        if self.snake[0].intersect(self.food) {
+        if self.snake[0].intersect(&self.food) {
             self.gen_food();
             self.increase_snake_length(1);
 
@@ -130,7 +130,7 @@ impl App {
                 let head = self.snake[0];
                 let ele = self.snake[i];
 
-                if ele.intersect(head) {
+                if ele.intersect(&head) {
                     self.game_over();
                     return;
                 }
