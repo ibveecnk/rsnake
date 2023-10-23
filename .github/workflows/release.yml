@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Compile
         id: compile
-        uses: rust-build/rust-build.action@v1.3.2
+        uses: rust-build/rust-build.action@v1.4.4
         with:
           RUSTTARGET: ${{ matrix.target }}
           EXTRA_FILES: "README.md"
