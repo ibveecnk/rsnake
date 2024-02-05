@@ -3,7 +3,13 @@ name = "rsnake"
 version = "0.1.6"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# Optimize release build
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
 
 [dependencies]
 piston = "0.55.0"
@@ -12,3 +18,22 @@ pistoncore-glutin_window = "0.72.0"
 piston2d-opengl_graphics = "0.84.0"
 piston_window = "0.131.0"
 rand = "0.8.5"
+
+# Enforce style
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+missing_docs_in_private_items = "deny"
+unwrap_used = "deny"
+pedantic = "deny"
+correctness = "deny"
+suspicious = "deny"
+complexity = "deny"
+style = "deny"
+missing_const_for_fn = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+enum_glob_use = "deny"
+nursery = "deny"
+match-wild-err-arm = "warn"
