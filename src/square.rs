@@ -79,7 +79,7 @@ impl Square {
     }
 
     pub fn intersect(&self, square: &Square) -> bool {
-        if (self.x - self.width / 2.0 >= square.x - square.width / 2.0
+        (self.x - self.width / 2.0 >= square.x - square.width / 2.0
             || self.x + self.width / 2.0 >= square.x - square.width / 2.0)
             && (self.x - self.width / 2.0 <= square.x + square.width / 2.0
                 || self.x + self.width / 2.0 <= square.x + square.width / 2.0)
@@ -87,9 +87,5 @@ impl Square {
                 || self.y + self.width / 2.0 >= square.y - square.width / 2.0)
             && (self.y - self.width / 2.0 <= square.y + square.width / 2.0
                 || self.y + self.width / 2.0 <= square.y + square.width / 2.0)
-        {
-            return true;
-        }
-        false
     }
 }
