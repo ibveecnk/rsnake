@@ -24,7 +24,6 @@ rand = "0.8.5"
 unsafe_code = "forbid"
 
 [lints.clippy]
-missing_docs_in_private_items = "deny"
 unwrap_used = "deny"
 pedantic = "deny"
 correctness = "deny"

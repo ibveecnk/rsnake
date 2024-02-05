@@ -1,14 +1,13 @@
 #![allow(dead_code)]
 
-use graphics::*;
+use graphics::{rectangle, Transformed};
 use opengl_graphics::GlGraphics;
 use piston::input::{RenderArgs, UpdateArgs};
 
 use crate::settings;
 
 #[derive(Debug, Clone, Copy)]
-
-pub enum SquareType {
+pub enum Type {
     Head,
     Tail,
     Food,
@@ -22,7 +21,9 @@ pub struct Square {
     pub mov_speed_x: f64,
     pub mov_speed_y: f64,
     pub color: [f32; 4],
-    pub square_type: SquareType,
+    #[allow(clippy::struct_field_names)]
+    pub square_type: Type,
+    #[allow(clippy::struct_field_names)]
     square: graphics::types::Rectangle,
 }
 
@@ -34,9 +35,9 @@ impl Square {
         mov_speed_x: f64,
         mov_speed_y: f64,
         color: [f32; 4],
-        square_type: SquareType,
-    ) -> Square {
-        Square {
+        square_type: Type,
+    ) -> Self {
+        Self {
             x,
             y,
             width,
@@ -60,7 +61,7 @@ impl Square {
         });
     }
 
-    pub fn update(&mut self, args: &UpdateArgs) {
+    pub fn update(&mut self, args: UpdateArgs) {
         self.x += self.mov_speed_x * args.dt;
         self.y += self.mov_speed_y * args.dt;
 
@@ -78,7 +79,7 @@ impl Square {
         }
     }
 
-    pub fn intersect(&self, square: &Square) -> bool {
+    pub fn intersect(&self, square: &Self) -> bool {
         (self.x - self.width / 2.0 >= square.x - square.width / 2.0
             || self.x + self.width / 2.0 >= square.x - square.width / 2.0)
             && (self.x - self.width / 2.0 <= square.x + square.width / 2.0

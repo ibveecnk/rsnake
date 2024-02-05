@@ -3,14 +3,13 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use app::App;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderEvent, UpdateEvent};
 use piston::window::WindowSettings;
-use piston::{ButtonEvent, Key};
-use rand::Rng;
-use std::vec::Vec;
+use piston::ButtonEvent;
 
 mod app;
 mod settings;
@@ -19,7 +18,6 @@ mod square;
 fn main() {
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
-    let mut rng = rand::thread_rng();
 
     // Create an Glutin window.
     let mut window: Window = WindowSettings::new("RSnake", settings::WINDOWSIZE)
@@ -27,23 +25,9 @@ fn main() {
         .exit_on_esc(true)
         .resizable(false)
         .build()
-        .unwrap();
+        .map_or_else(|_| panic!("Could not initialize Window"), |window| window);
 
-    let mut app = app::App {
-        gl: GlGraphics::new(opengl),
-        snake: Vec::new(),
-        food: square::Square::new(
-            rng.gen_range(5.0..(settings::WINDOWSIZE[0] - 5_f64)),
-            rng.gen_range(5.0..(settings::WINDOWSIZE[1] - 5_f64)),
-            10.0,
-            0.0,
-            0.0,
-            [1.0, 0.0, 0.0, 1.0],
-            square::SquareType::Food,
-        ),
-        last_key: piston::Button::Keyboard(Key::AcHome),
-        score: 0,
-    };
+    let mut app = App::new(GlGraphics::new(opengl));
 
     app.snake.push(square::Square::new(
         settings::WINDOWSIZE[0] / 2.0,
@@ -52,7 +36,7 @@ fn main() {
         0.0,
         0.0,
         [0.0, 1.0, 0.0, 1.0],
-        square::SquareType::Head,
+        square::Type::Head,
     ));
 
     let mut e_settings = EventSettings::new();
@@ -66,7 +50,7 @@ fn main() {
 
         // update loop
         if let Some(args) = e.update_args() {
-            app.update(&args);
+            app.update(args);
         }
 
         if let Some(args) = e.button_args() {
