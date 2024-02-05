@@ -33,7 +33,7 @@ jobs:
           ARCHIVE_TYPES: ${{ matrix.archive }}
           MINIFY: "yes"
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Binary
           path: |
