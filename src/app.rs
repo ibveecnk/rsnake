@@ -103,24 +103,24 @@ impl App {
             println!("Score: {}", self.score);
         }
 
-        // Todo: wall teleportation fix for tail
-        /*
-        if self.snake.len() > 1
-            && (abs(self.snake[0].x - self.snake[1].x) > 50.0
-                || abs(self.snake[0].y - self.snake[1].y) > 50.0)
-        {
-            // Respawn tail if gone through wall
-            let old_len: i64 = self.reset_tail().try_into().unwrap();
-
-            self.increase_snake_length(old_len);
-        }
-         */
-
         for i in (1..self.snake.len()).rev() {
             // magic number is the bonding force
-            self.snake[i].mov_speed_x = (self.snake[i - 1].x - self.snake[i].x) * 10.0;
-            self.snake[i].mov_speed_y = (self.snake[i - 1].y - self.snake[i].y) * 10.0;
-
+            let mut x_diff = self.snake[i - 1].x - self.snake[i].x;
+            let mut y_diff = self.snake[i - 1].y - self.snake[i].y;
+            
+            // wall teleportation fix (avoid gigantic speed in wrong direction)
+            if x_diff > 0.9 * settings::WINDOWSIZE[0] {
+                x_diff -= settings::WINDOWSIZE[0]
+            } else if x_diff < -0.9 * settings::WINDOWSIZE[0] {
+                x_diff += settings::WINDOWSIZE[0]
+            }
+            if y_diff > 0.9 * settings::WINDOWSIZE[1] {
+                y_diff -= settings::WINDOWSIZE[1]
+            } else if y_diff < -0.9 * settings::WINDOWSIZE[1] {
+                y_diff += settings::WINDOWSIZE[1]
+            }
+            self.snake[i].mov_speed_x = (x_diff) * 10.0;
+            self.snake[i].mov_speed_y = (y_diff) * 10.0;
             self.snake[i].update(args);
 
             if i < 3 {
